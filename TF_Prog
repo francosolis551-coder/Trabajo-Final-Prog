@@ -1,0 +1,1263 @@
+#include <iostream>
+#include <conio.h>
+#include <string>
+#include <ctype.h>
+
+using namespace std;
+
+struct Nombre_Especialista
+{
+	string Nombre_s;
+	string Apellido_Paterno;
+	string Apellido_Materno;
+};
+struct Especialistas
+{
+	string DNI_Especialista;
+	Nombre_Especialista Nombre;
+	string Telefono;
+	string Especialidad;
+	int Anios_Experiencia;
+};
+struct Monumentos
+{
+	string Código_Monu;
+	string Nombre_Monu;
+	string Ubicación;
+	string Tipo_Patrimonio;
+	int Anho_Construcción_Aprox;
+	string Estado_conservación;
+};
+struct Fecha_Inicio_y_Fin
+{
+	int Dia;
+	int Mes;
+	int Anio; // <-- CAMBIADO PARA TU PARTE
+
+};
+struct Proyectos_Conservacion
+{
+	string codigo_Proy;
+	string Nombre_Proy;
+	string Codigo_Monu;
+	string Tipo_Intervencion;
+	Fecha_Inicio_y_Fin Fecha_Inicio;
+	Fecha_Inicio_y_Fin Fecha_Fin;
+	float Presupuesto_Asignado;
+	string Estado_proy;
+
+};
+struct Asignaciones
+{
+	string DNI_Especialista;
+	string Codigo_Proy;
+	Fecha_Inicio_y_Fin Fecha_Asignacion;
+	string Funcion;
+	string Estado_Asignacion;
+};
+
+/*---------------------------------------------------AUXILIARES--------------------------------------------------------------*/
+
+int ContarCaracteres(string texto) {
+	int cantidad = texto.length();
+	return cantidad;
+}
+bool SoloDigitos(string texto) {
+	if (ContarCaracteres(texto) == 0) {
+		return false;
+	}
+
+	for (int i = 0; i < ContarCaracteres(texto); i++) {
+		if (!isdigit(texto[i])) {
+			return false;
+		}
+	}
+
+	return true;
+}
+bool TieneDigitos(string texto) {
+	for (int i = 0; i < ContarCaracteres(texto); i++) {
+		if (isdigit(texto[i])) {
+			return true;
+		}
+	}
+
+	return false;
+}
+string Primera_letra_mayuscula(string texto) {
+
+	texto[0] = toupper(texto[0]);
+
+	return texto;
+}
+
+int Fecha_numero(int anio, int mes, int dia) {
+	int Fecha = 0;
+	Fecha = anio * 10000 + mes * 100 + dia;
+	return Fecha;
+}
+
+
+
+int Menu() {
+	int opcion = 0;
+
+	cout << "Bienvenido al Menu de control de nuestro";
+	cout << "Centro de Conservacion del Patrimonio Historico!" << endl << endl;
+	cout << "Menu de opciones" << endl;
+	cout << "================================================" << endl;
+	cout << "1.- Registrar un nuevo monumento" << endl;
+	cout << "2.- Registrar un nuevo especialista" << endl;
+	cout << "3.- Registrar un nuevo proyecto de conservacion" << endl;
+	cout << "4.- Asignar un especialista a un proyecto de conservacion" << endl;
+	cout << "5.- Reporte 1" << endl;
+	cout << "6.- Reporte 2" << endl;
+	cout << "7.- Salir" << endl << endl;
+
+	do {
+		cout << "Seleccione la accion a realizar: ";
+		cin >> opcion;
+
+		if (!(opcion > 0 && opcion <= 6)) {
+			if (opcion == 7) {
+				return opcion;
+			}
+			else {
+				cout << "Opcion Ingresada no valida! (Seleccione una de las opciones que se muestran en la pantalla)" << endl;
+			}
+		}
+
+	} while (!(opcion > 0 && opcion <= 6));
+
+	return opcion;
+}
+/*-------------------------------YA REGISTRADOS:--------------------------------------------------------*/
+void Especialistas_Registrados(Especialistas Lista[], int cant) {
+
+
+
+	string dni[4] = { "70123456","71234567","72345678","73456789" };
+	string nombre[4] = { "Carlos","Lucia","Miguel","Rosa" };
+	string apPaterno[4] = { "Mendoza","Paredes","Flores","Huaman" };
+	string apMaterno[4] = { "Rojas","Soto","Vega","Cruz" };
+	string telefono[4] = { "987654321","986543210","985432109","984321098" };
+	string especialidad[4] = { "Arquitectura_Patrimonial","Arqueologia","Restauracion_Artistica","Ingenieria_Estructural" };
+	int anios[4] = { 12, 8, 15, 10 };
+
+	for (int i = 0; i < cant; i++) {
+		Lista[i].DNI_Especialista = dni[i];
+		Lista[i].Nombre.Nombre_s = nombre[i];
+		Lista[i].Nombre.Apellido_Paterno = apPaterno[i];
+		Lista[i].Nombre.Apellido_Materno = apMaterno[i];
+		Lista[i].Telefono = telefono[i];
+		Lista[i].Especialidad = especialidad[i];
+		Lista[i].Anios_Experiencia = anios[i];
+	}
+}
+
+
+void MonumentosHistoricosYaRegistrados(Monumentos* Estructuras, int cant) {
+	string code[3] = { "M-001","M-002","M-003" };
+	string Name[3] = { "BASILICA Y CONVENTO DE SAN FRANCISCO","SANTUARIO HISTORICO DE MACHU PICCHU","MONASTERIO DE SANTA CATALINA DE SIENA" };
+	string Ubication[3] = { "Lima","Cusco","Arequipa" };
+	string Patrimonio[3] = { "Religioso","Arqueologico","Arquitectonico" };	
+	int AnhoConstruct[3] = { 1546,1450,1579 };
+	string EstadoCons[3] = { "Bueno","Regular","Critico" };
+
+	for (int i = 0; i < cant; i++) {
+		Estructuras[i].Código_Monu = code[i];
+		Estructuras[i].Nombre_Monu = Name[i];
+		Estructuras[i].Ubicación = Ubication[i];
+		Estructuras[i].Tipo_Patrimonio = Patrimonio[i];
+		Estructuras[i].Anho_Construcción_Aprox = AnhoConstruct[i];
+		Estructuras[i].Estado_conservación = EstadoCons[1];
+	}
+}
+
+void ProyectosRegistrados(Proyectos_Conservacion* ListaP, int cant) {
+	string codigos[3] = { "P-001", "P-002", "P-003" };
+	string nombres[3] = { "RESTAURACION DE FACHADA SAN FRANCISCO", "MANTENIMIENTO DE ANDENES MACHU PICCHU", "EVALUACION ESTRUCTURAL SANTA CATALINA" };
+	string codMonu[3] = { "M-001", "M-002", "M-003" };
+	string tipoInt[3] = { "Restauracion", "Mantenimiento", "Evaluacion Estructural" };
+	int diaIni[3] = { 10, 15, 20 };
+	int mesIni[3] = { 3, 5, 8 };
+	int anhoIni[3] = { 2026, 2027, 2026 };
+	int diaFin[3] = { 10, 15, 20 };
+	int mesFin[3] = { 9, 11, 12 };
+	int anhoFin[3] = { 2026, 2027, 2026 };
+	float presupuesto[3] = { 150000.50, 220000.00, 95000.75 };
+	string estado[3] = { "Finalizado", "Planificado", "En ejecucion" };
+
+	for (int i = 0; i < cant; i++) {
+		ListaP[i].codigo_Proy = codigos[i];
+		ListaP[i].Nombre_Proy = nombres[i];
+		ListaP[i].Codigo_Monu = codMonu[i];
+		ListaP[i].Tipo_Intervencion = tipoInt[i];
+		ListaP[i].Fecha_Inicio.Dia = diaIni[i];
+		ListaP[i].Fecha_Inicio.Mes = mesIni[i];
+		ListaP[i].Fecha_Inicio.Anio = anhoIni[i];
+		ListaP[i].Fecha_Fin.Dia = diaFin[i];
+		ListaP[i].Fecha_Fin.Mes = mesFin[i];
+		ListaP[i].Fecha_Fin.Anio = anhoFin[i];
+		ListaP[i].Presupuesto_Asignado = presupuesto[i];
+		ListaP[i].Estado_proy = estado[i];
+	}
+}
+void Asignaciones_Registradas(Asignaciones Lista[], int cant) {
+	string Dni_especialista[3] = { "70123456","71234567","73456789" };
+	string Codigo_proyecto[3] = { "P-001","P-002","P-003" };
+	int dia_Asignacion[3] = { 10, 10, 20 };
+	int mes_Asignacion[3] = { 3, 5, 8 };
+	int anio_Asignacion[3] = { 2026, 2026, 2026 };
+	string Funcion_desempenio[3] = { "Responsable", "Supervisor", "Asistente" };
+	string Estado_Asignacion[3] = { "Finalizada", "Activa", "Activa" };
+
+	for (int i = 0; i < cant; i++)
+	{
+		Lista[i].DNI_Especialista = Dni_especialista[i];
+		Lista[i].Codigo_Proy = Codigo_proyecto[i];
+		Lista[i].Fecha_Asignacion.Dia = dia_Asignacion[i];
+		Lista[i].Fecha_Asignacion.Mes = mes_Asignacion[i];
+		Lista[i].Fecha_Asignacion.Anio = anio_Asignacion[i];
+		Lista[i].Funcion = Funcion_desempenio[i];
+		Lista[i].Estado_Asignacion = Estado_Asignacion[i];
+	}
+
+}
+
+/*------------------------------------A REGSTRAR- Nuevos: ---------------------------------------------------*/
+
+void RegistroMonumento(Monumentos* Estructuras, int canti) {
+	int longitud = 0, eleccionUbicacion = 0, eleccionPatrimonio = 0, eleccionConservacion = 0, cantNums = 0, repeticion = 0, NumsEnNombre = 0, repeNombre = 0;
+
+	string Ubication[3] = { "Lima","Cusco","Arequipa" };
+	string Patrimonio[4] = { "Religioso","Arqueologico","Arquitectonico","Historico" };
+	string EstadoCons[3] = { "Bueno","Regular","Critico" };
+
+	cout << "Selecciono: Registrar un nuevo Monumento!" << endl;
+	cout << "=========================================" << endl;
+	//==============================================================================================================
+		//Ingreso y validacion del codigo del monumento
+	do {
+		repeticion = 0;
+		cantNums = 0;
+
+		cout << "Ingrese el codigo del Monumento " << canti + 1 << " (Ejm:Monumento 4 --> M-004): ";
+		cin >> Estructuras[canti].Código_Monu;
+
+		longitud = Estructuras[canti].Código_Monu.length();
+
+		for (int j = 0; j < longitud; j++) {
+			Estructuras[canti].Código_Monu[j] = toupper(Estructuras[canti].Código_Monu[j]);
+		}
+
+		for (int k = 2; k < longitud; k++) {
+			if (isdigit(Estructuras[canti].Código_Monu[k])) {
+				cantNums++;
+			}
+		}
+
+		for (int l = 0; l < canti; l++) {
+			if (Estructuras[l].Código_Monu == Estructuras[canti].Código_Monu) {
+				repeticion++;
+			}
+		}
+
+		if (!(longitud == 5 && Estructuras[canti].Código_Monu[0] == 'M' && Estructuras[canti].Código_Monu[1] == '-' && cantNums == 3 && repeticion == 0)) {
+			cout << "Codigo invalido o ya existente!" << endl;
+		}
+
+	} while (!(longitud == 5 && Estructuras[canti].Código_Monu[0] == 'M' && Estructuras[canti].Código_Monu[1] == '-' && cantNums == 3 && repeticion == 0));
+
+	cout << endl;
+
+	//==============================================================================================
+	// Validacion del nombre del monumento //Modificar para que no se repita el nombre
+	do {
+		NumsEnNombre = 0;
+		repeNombre = 0;
+
+		cout << "Ingrese el nombre del Monumento " << canti + 1 << " (Ejm: Estatua del Papa Leon XIV): ";
+
+		cin.ignore();
+		getline(cin, Estructuras[canti].Nombre_Monu);
+
+		for (int o = 0; o < Estructuras[canti].Nombre_Monu.length(); o++) {
+			Estructuras[canti].Nombre_Monu[o] = toupper(Estructuras[canti].Nombre_Monu[o]);
+		}
+
+		for (int m = 0; m < Estructuras[canti].Nombre_Monu.length(); m++) {
+			if (isdigit(Estructuras[canti].Nombre_Monu[m])) {
+				NumsEnNombre++;
+			}
+		}
+
+		for (int n = 0; n < canti; n++) {
+			if (Estructuras[n].Nombre_Monu == Estructuras[canti].Nombre_Monu) {
+				repeNombre++;
+			}
+		}
+
+		if (!(NumsEnNombre == 0 && repeNombre == 0)) {
+			cout << "Nombre con caracteres Invalidos o Nombre repetido!" << endl;
+		}
+
+	} while (!(NumsEnNombre == 0 && repeNombre == 0));
+
+	cout << endl;
+
+	//==============================================================================================
+	// Eleccion de la ubicacion del monumento
+	cout << "Elija la ubicacion del Monumento " << canti + 1 << ": " << endl;
+	cout << "1.- Lima" << endl;
+	cout << "2.- Cusco" << endl;
+	cout << "3.- Arequipa" << endl;
+
+	do {
+		cout << "Ubicacion: ";
+		cin >> eleccionUbicacion;
+
+		if (eleccionUbicacion == 1) {
+			Estructuras[canti].Ubicación = Ubication[0];
+		}
+		else if (eleccionUbicacion == 2) {
+			Estructuras[canti].Ubicación = Ubication[1];
+		}
+		else if (eleccionUbicacion == 3) {
+			Estructuras[canti].Ubicación = Ubication[2];
+		}
+
+		if (!(eleccionUbicacion == 1 || eleccionUbicacion == 2 || eleccionUbicacion == 3)) {
+			cout << "Opcion no valida!" << endl;
+		}
+
+	} while (!(eleccionUbicacion == 1 || eleccionUbicacion == 2 || eleccionUbicacion == 3));
+
+	cout << endl;
+
+	//==============================================================================================
+	// Eleccion del tipo de patrimonio del monumento
+	cout << "Elija el tipo de patrimonio del Monumento " << canti + 1 << ": " << endl;
+	cout << "1.- Religioso" << endl;
+	cout << "2.- Arqueologico" << endl;
+	cout << "3.- Arquitectonico" << endl;
+	cout << "4.- Historico" << endl;
+
+	do {
+		cout << "Tipo de patrimonio: ";
+		cin >> eleccionPatrimonio;
+
+		if (eleccionPatrimonio == 1) {
+			Estructuras[canti].Tipo_Patrimonio = Patrimonio[0];
+		}
+		else if (eleccionPatrimonio == 2) {
+			Estructuras[canti].Tipo_Patrimonio = Patrimonio[1];
+		}
+		else if (eleccionPatrimonio == 3) {
+			Estructuras[canti].Tipo_Patrimonio = Patrimonio[2];
+		}
+		else if (eleccionPatrimonio == 4) {
+			Estructuras[canti].Tipo_Patrimonio = Patrimonio[3];
+		}
+
+		if (!(eleccionPatrimonio == 1 || eleccionPatrimonio == 2 || eleccionPatrimonio == 3 || eleccionPatrimonio == 4)) {
+			cout << "Opcion Invalida!" << endl;
+		}
+
+	} while (!(eleccionPatrimonio == 1 || eleccionPatrimonio == 2 || eleccionPatrimonio == 3 || eleccionPatrimonio == 4));
+
+	cout << endl;
+
+	//==============================================================================================
+	// Validacion del año de construccion del monumento
+	do {
+		cout << "Ingrese el anio de construccion aproximado del Monumento " << canti + 1 << ": ";
+		cin >> Estructuras[canti].Anho_Construcción_Aprox;
+
+		if (!(Estructuras[canti].Anho_Construcción_Aprox > 0 && Estructuras[canti].Anho_Construcción_Aprox <= 2026)) {
+			cout << "Anio Invalido!" << endl;
+		}
+
+	} while (!(Estructuras[canti].Anho_Construcción_Aprox > 0 && Estructuras[canti].Anho_Construcción_Aprox <= 2026));
+
+	cout << endl;
+
+	//==============================================================================================
+	// Eleccion de estado de conservacion
+	cout << "Elija el estado de conservacion del Monumento " << canti + 1 << ": " << endl;
+	cout << "1.- Bueno" << endl;
+	cout << "2.- Regular" << endl;
+	cout << "3.- Critico" << endl;
+
+	do {
+		cout << "Estado de conservacion: ";
+		cin >> eleccionConservacion;
+
+		if (eleccionConservacion == 1) {
+			Estructuras[canti].Estado_conservación = EstadoCons[0];
+		}
+		else if (eleccionConservacion == 2) {
+			Estructuras[canti].Estado_conservación = EstadoCons[1];
+		}
+		else if (eleccionConservacion == 3) {
+			Estructuras[canti].Estado_conservación = EstadoCons[2];
+		}
+
+		if (!(eleccionConservacion == 1 || eleccionConservacion == 2 || eleccionConservacion == 3)) {
+			cout << "Opcion Invalida!" << endl;
+		}
+
+	} while (!(eleccionConservacion == 1 || eleccionConservacion == 2 || eleccionConservacion == 3));
+
+	cout << endl;
+
+	cout << "Monumento Registrado con Exito!" << endl << endl;
+}
+
+void RegistroEspecialista(Especialistas Lista[], int cant) {
+	int repeticion = 0, numero_en_texto = 0, eleccion_de_Especialidad = 0;
+	string especialidad[4] = { "Arquitectura_Patrimonial","Arqueologia","Restauracion_Artistica","Ingenieria_Estructural" };
+
+
+	cout << "Selecciono: Registrar un nuevo especialista!" << endl;
+	cout << "=========================================" << endl;
+	/*---------------Verificacion de DNI del Especialista nuevo ----------------------------*/
+	do
+	{
+		repeticion = 0;
+		cout << "Ingresar DNI del Especialista N-" << cant + 1 << " : ";
+		cin >> Lista[cant].DNI_Especialista;
+
+		for (int i = 0; i < cant; i++)
+		{
+			if (Lista[i].DNI_Especialista == Lista[cant].DNI_Especialista) {
+				repeticion++;
+			}
+		}
+		if (repeticion == 0 && ContarCaracteres(Lista[cant].DNI_Especialista) == 8 && SoloDigitos(Lista[cant].DNI_Especialista))
+		{
+			break;
+		}
+		else {
+			cout << "DNI invalido o ya existente!" << endl;
+		}
+	} while (true);
+	/*---------------Verificacion de nombre del Especialista nuevo ----------------------------*/
+	cin.ignore();//antes para q no entre en un bucle 
+	do
+	{
+		//primer nombre
+		cout << "Ingrese el/los nombre(s) del Especialista N-" << cant + 1 << " (Ejm: Pedro Julian): ";
+		getline(cin, Lista[cant].Nombre.Nombre_s);
+		Primera_letra_mayuscula(Lista[cant].Nombre.Nombre_s);
+
+		if (TieneDigitos(Lista[cant].Nombre.Nombre_s)) {
+			cout << "No debe contener numeros!" << endl;
+
+		}
+
+	} while (TieneDigitos(Lista[cant].Nombre.Nombre_s));
+	////////////////////////////////////////////////////
+
+	do
+	{
+		//Apellido paterno
+		cout << "Ingrese el Apellido paterno del Especialista N-" << cant + 1 << " (Ejm: Salome): ";
+		cin >> Lista[cant].Nombre.Apellido_Paterno;
+
+
+		if (TieneDigitos(Lista[cant].Nombre.Apellido_Paterno)) {
+			cout << "No debe contener numeros!" << endl;
+
+		}
+
+	} while (TieneDigitos(Lista[cant].Nombre.Apellido_Paterno));
+	//////////////////////////////////////////////////
+	do
+	{
+		//Apellido materno
+		cout << "Ingrese el Apellido materno del Especialista N-" << cant + 1 << " (Ejm: Salazar): ";
+		cin >> Lista[cant].Nombre.Apellido_Materno;
+
+
+		if (TieneDigitos(Lista[cant].Nombre.Apellido_Materno)) {
+			cout << "No debe contener numeros!" << endl;
+
+		}
+
+	} while (TieneDigitos(Lista[cant].Nombre.Apellido_Materno));
+
+	/*---------------Verificacion de numero telefonico/celular del Especialista nuevo ----------------------------*/
+
+	do
+	{
+		repeticion = 0;
+		cout << "Ingresar numero telefonico del Especialista N-" << cant + 1 << " : ";
+		cin >> Lista[cant].Telefono;
+
+		for (int i = 0; i < cant; i++)
+		{
+			if (Lista[i].Telefono == Lista[cant].Telefono) {
+				repeticion++;
+			}
+		}
+		if (repeticion == 0 && ContarCaracteres(Lista[cant].Telefono) == 9 && SoloDigitos(Lista[cant].Telefono))
+		{
+			break;
+		}
+		else {
+			cout << "numero telefonico invalido, por favor poner 9 digitos de su numero telefonico!" << endl;
+		}
+	} while (true);
+
+	/*---------------Verificacion de Especialidad del especialista nuevo ----------------------------*/
+	cout << "Elija la Especialidad que tiene el nuevo especialista" << cant + 1 << ": " << endl;
+	cout << "1.- Arquitectura_Patrimonial" << endl;
+	cout << "2.- Arqueologia" << endl;
+	cout << "3.- Restauracion_Artistica" << endl;
+	cout << "4.- Ingenieria_Estructural" << endl;
+
+	do {
+		cout << "Especialidad: ";
+		cin >> eleccion_de_Especialidad;
+
+		if (eleccion_de_Especialidad == 1) {
+			Lista[cant].Especialidad = especialidad[0];
+		}
+		else if (eleccion_de_Especialidad == 2) {
+			Lista[cant].Especialidad = especialidad[1];
+		}
+		else if (eleccion_de_Especialidad == 3) {
+			Lista[cant].Especialidad = especialidad[2];
+		}
+		else if (eleccion_de_Especialidad == 4) {
+			Lista[cant].Especialidad = especialidad[3];
+		}
+
+		if (!(eleccion_de_Especialidad == 1 || eleccion_de_Especialidad == 2 || eleccion_de_Especialidad == 3 || eleccion_de_Especialidad == 4)) {
+			cout << "Opcion Invalida!" << endl;
+		}
+
+	} while (!(eleccion_de_Especialidad == 1 || eleccion_de_Especialidad == 2 || eleccion_de_Especialidad == 3 || eleccion_de_Especialidad == 4));
+
+	cout << endl;
+
+	//-----------------------------Años de Experiencia------------------------------
+	do {
+		cout << "Ingrese la cantidad de anios de experiencia del Especialista N-" << cant + 1 << " : ";
+		cin >> Lista[cant].Anios_Experiencia;
+
+		if (!(Lista[cant].Anios_Experiencia > 0 && Lista[cant].Anios_Experiencia <= 100)) {
+			cout << "Anio Invalido!" << endl;
+		}
+
+	} while (!(Lista[cant].Anios_Experiencia > 0 && Lista[cant].Anios_Experiencia <= 100));
+	cout << "\nExpecialista registrado con exito!" << endl << endl;
+
+
+}
+
+//-----------------------------Registro de nuevo proyecto------------------------------
+void RegistroProyecto(Proyectos_Conservacion* ListaP, int cantP, Monumentos* Estructuras, int cantM)
+{
+	int Longitud = 0, cantNums = 0, Repeticion = 0, existeMonumento = 0;
+	int eleccionIntervencion = 0, eleccionEstado = 0;
+
+	string Intervenciones[4] = { "Restauracion", "Mantenimiento", "Evaluacion Estructural", "Conservacion Preventiva" };
+	string Estados[3] = { "Planificado", "En ejecucion", "Finalizado" };
+
+	cout << "Selecciono: Registrar un nuevo Proyecto de Conservacion!" << endl;
+	cout << "========================================================" << endl;
+
+	//Pa' validar el codigo del proyecto
+	do
+	{
+		Repeticion = 0;
+		cantNums = 0;
+
+		cout << "Ingrese el codigo del Proyecto " << cantP + 1 << " (Ejm: P-004): ";
+		cin >> ListaP[cantP].codigo_Proy;
+
+		Longitud = ListaP[cantP].codigo_Proy.length(); //podemos usar el auxiliar que puse
+
+		for (int j = 0; j < Longitud; j++)
+		{
+			ListaP[cantP].codigo_Proy[j] = toupper(ListaP[cantP].codigo_Proy[j]);
+		}
+
+		for (int k = 2; k < Longitud; k++)
+		{
+			if (isdigit(ListaP[cantP].codigo_Proy[k]))
+			{
+				cantNums++;
+			}
+		}
+
+		for (int l = 0; l < cantP; l++)
+		{
+			if (ListaP[l].codigo_Proy == ListaP[cantP].codigo_Proy)
+			{
+				Repeticion++;
+			}
+		}
+
+		if (!(Longitud == 5 && ListaP[cantP].codigo_Proy[0] == 'P' && ListaP[cantP].codigo_Proy[1] == '-' && cantNums == 3 && Repeticion == 0))
+		{
+			cout << "Codigo invalido o ya existente!" << endl;
+		}
+
+	} while (!(Longitud == 5 && ListaP[cantP].codigo_Proy[0] == 'P' && ListaP[cantP].codigo_Proy[1] == '-' && cantNums == 3 && Repeticion == 0));
+
+
+	cout << endl;
+
+	//Pa' poner el nombre del proyecto
+	cin.ignore();
+	cout << "Ingrese el nombre del Proyecto " << cantP + 1 << ": ";
+	getline(cin, ListaP[cantP].Nombre_Proy);
+
+	for (int o = 0; o < ListaP[cantP].Nombre_Proy.length(); o++)
+	{
+		ListaP[cantP].Nombre_Proy[o] = toupper(ListaP[cantP].Nombre_Proy[o]);
+	}
+	cout << endl;
+
+	//Pa' validar el codigo del monumento asociado (debe de ya existir)
+	cout << "Monumentos registrados disponibles:" << endl;
+	for (int i = 0; i < cantM; i++)
+	{
+		cout << " - " << Estructuras[i].Código_Monu << " : " << Estructuras[i].Nombre_Monu << endl;
+	}
+
+	do
+	{
+		existeMonumento = 0;
+		cout << "Ingrese el codigo del Monumento asociado: ";
+		cin >> ListaP[cantP].Codigo_Monu;
+
+		for (int j = 0; j < ListaP[cantP].Codigo_Monu.length(); j++)
+		{
+			ListaP[cantP].Codigo_Monu[j] = toupper(ListaP[cantP].Codigo_Monu[j]);
+		}
+
+		for (int i = 0; i < cantM; i++) {
+			if (Estructuras[i].Código_Monu == ListaP[cantP].Codigo_Monu)
+			{
+				existeMonumento = 1;
+				break;
+			}
+		}
+
+		if (existeMonumento == 0)
+		{
+			cout << "Error: El monumento ingresado no se encuentra registrado!" << endl;
+		}
+	} while (existeMonumento == 0);
+	cout << endl;
+
+	//Pa' elegir el tipo de intervencion
+	cout << "Elija el tipo de intervencion:" << endl;
+	cout << "1.- Restauracion" << endl;
+	cout << "2.- Mantenimiento" << endl;
+	cout << "3.- Evaluacion Estructural" << endl;
+	cout << "4.- Conservacion Preventiva" << endl;
+
+	do
+	{
+		cout << "Tipo de intervencion: ";
+		cin >> eleccionIntervencion;
+
+		if (eleccionIntervencion >= 1 && eleccionIntervencion <= 4) {
+			ListaP[cantP].Tipo_Intervencion = Intervenciones[eleccionIntervencion - 1];
+		}
+		else
+		{
+			cout << "Opcion Invalida!" << endl;
+		}
+	} while (!(eleccionIntervencion >= 1 && eleccionIntervencion <= 4));
+	cout << endl;
+
+	//Pa' ingresar y validar la fecha de INICIO
+	cout << "--- Fecha de Inicio ---" << endl;
+	do
+	{
+		cout << "Dia (1-31): ";
+		cin >> ListaP[cantP].Fecha_Inicio.Dia;
+		if (!(ListaP[cantP].Fecha_Inicio.Dia >= 1 && ListaP[cantP].Fecha_Inicio.Dia <= 31))
+		{
+			cout << "Dia invalido!" << endl;
+		}
+	} while (!(ListaP[cantP].Fecha_Inicio.Dia >= 1 && ListaP[cantP].Fecha_Inicio.Dia <= 31));
+
+	do
+	{
+		cout << "Mes (1-12): ";
+		cin >> ListaP[cantP].Fecha_Inicio.Mes;
+		if (!(ListaP[cantP].Fecha_Inicio.Mes >= 1 && ListaP[cantP].Fecha_Inicio.Mes <= 12))
+		{
+			cout << "Mes invalido!" << endl;
+		}
+	} while (!(ListaP[cantP].Fecha_Inicio.Mes >= 1 && ListaP[cantP].Fecha_Inicio.Mes <= 12));
+
+	do
+	{
+		cout << "Anho (Ejm: 2026): ";
+		cin >> ListaP[cantP].Fecha_Inicio.Anio;
+		if (!(ListaP[cantP].Fecha_Inicio.Anio >= 2000 && ListaP[cantP].Fecha_Inicio.Anio <= 2100))
+		{
+			cout << "Anho invalido!" << endl;
+		}
+	} while (!(ListaP[cantP].Fecha_Inicio.Anio >= 2000 && ListaP[cantP].Fecha_Inicio.Anio <= 2100));
+	cout << endl;
+
+	//Pa' ingresar y validar la fecha de FIN
+	cout << "--- Fecha de Fin ---" << endl;
+	do
+	{
+		cout << "Dia (1-31): ";
+		cin >> ListaP[cantP].Fecha_Fin.Dia;
+		if (!(ListaP[cantP].Fecha_Fin.Dia >= 1 && ListaP[cantP].Fecha_Fin.Dia <= 31))
+		{
+			cout << "Dia invalido!" << endl;
+		}
+	} while (!(ListaP[cantP].Fecha_Fin.Dia >= 1 && ListaP[cantP].Fecha_Fin.Dia <= 31));
+
+	do
+	{
+		cout << "Mes (1-12): ";
+		cin >> ListaP[cantP].Fecha_Fin.Mes;
+		if (!(ListaP[cantP].Fecha_Fin.Mes >= 1 && ListaP[cantP].Fecha_Fin.Mes <= 12))
+		{
+			cout << "Mes invalido!" << endl;
+		}
+	} while (!(ListaP[cantP].Fecha_Fin.Mes >= 1 && ListaP[cantP].Fecha_Fin.Mes <= 12));
+
+	do
+	{
+		cout << "Anho (Ejm: 2026): ";
+		cin >> ListaP[cantP].Fecha_Fin.Anio;
+		if (!(ListaP[cantP].Fecha_Fin.Anio >= ListaP[cantP].Fecha_Inicio.Anio && ListaP[cantP].Fecha_Fin.Anio <= 2100))
+		{
+			cout << "Anho invalido! (Debe ser mayor o igual al anho de inicio)" << endl;
+		}
+	} while (!(ListaP[cantP].Fecha_Fin.Anio >= ListaP[cantP].Fecha_Inicio.Anio && ListaP[cantP].Fecha_Fin.Anio <= 2100));
+	cout << endl;
+
+	//Pa' validar el presupuesto asignado
+	do
+	{
+		cout << "Ingrese el presupuesto asignado (S/.): ";
+		cin >> ListaP[cantP].Presupuesto_Asignado;
+
+		if (!(ListaP[cantP].Presupuesto_Asignado > 0))
+		{
+			cout << "El presupuesto debe ser mayor a 0!" << endl;
+		}
+	} while (!(ListaP[cantP].Presupuesto_Asignado > 0));
+	cout << endl;
+
+	//Pa' elegir el estado del proyecto
+	cout << "Elija el estado del proyecto:" << endl;
+	cout << "1.- Planificado" << endl;
+	cout << "2.- En ejecucion" << endl;
+	cout << "3.- Finalizado" << endl;
+
+	do
+	{
+		cout << "Estado: ";
+		cin >> eleccionEstado;
+
+		if (eleccionEstado >= 1 && eleccionEstado <= 3)
+		{
+			ListaP[cantP].Estado_proy = Estados[eleccionEstado - 1];
+		}
+		else
+		{
+			cout << "Opcion Invalida!" << endl;
+		}
+	} while (!(eleccionEstado >= 1 && eleccionEstado <= 3));
+	cout << "\nProyecto registrado con exito!" << endl << endl;
+}
+
+int mini_menu() {
+	int Registar_actualizar_Asignacio = 0;
+
+	cout << "Selecciono: Asignar un especialista a un proyecto de conservacion!" << endl;
+	cout << "=========================================" << endl;
+	cout << "Opciones: " << endl;
+	cout << "1.- Registrar asignacion" << endl;
+	cout << "2.- Finalizar asignacion" << endl;
+	cout << "3.- salir" << endl;
+	do
+	{
+		Registar_actualizar_Asignacio = 0;
+		cout << "Seleccionar una opcion: ";
+		cin >> Registar_actualizar_Asignacio;
+		if (Registar_actualizar_Asignacio >= 1 && Registar_actualizar_Asignacio <= 3)
+		{
+			break;
+		}
+		else
+		{
+			cout << "Opcion invalida, por favor seleccionar una opcion anteriormente mencionada" << endl;
+		}
+
+
+	} while (true);
+	return Registar_actualizar_Asignacio;
+}
+
+bool Asignar_especialista_a_proyecto_conservacion(Asignaciones listaA[], int cantA, Especialistas ListaE[], int cantE, Proyectos_Conservacion listaP[], int cantP, Monumentos ListaM[], int cantM) {
+
+	int funcion_del_especialista = 0, Estado_especialista = 0, guardar_pocicion_proyecto = 0, guardar_pocicion_especialista = 0, Fecha_fin_proy = 0, fecha_hoy = 0, fecha_asignacion = 0, confirmacion = 0;
+	string funcion[3] = { "Responsable", "Supervisor" , "Asistente" };
+	string Estado[2] = { "Activa", "Finalizada" };
+	bool Existe_especialista, Existe_Proyecto, Tiene_Asignacion;
+
+
+	cout << "Selecciono: registrar asignacion!" << endl;
+	cout << "=========================================" << endl;
+
+	//--------------Asignacion de un proyecto existente y tambien valida si tiene algun especialista ya asignado---------------------
+
+	cout << "Lista de Proyectos:  " << endl;
+	for (int i = 0; i < cantP; i++)
+	{
+		cout << listaP[i].codigo_Proy << ": " << listaP[i].Nombre_Proy << endl;
+	}
+
+	do
+	{
+		guardar_pocicion_proyecto = 0;
+		Existe_Proyecto = false;
+		Tiene_Asignacion = false;
+		cout << "Codigo del proyecto de asignacion: ";
+		cin >> listaA[cantA].Codigo_Proy;
+		listaA[cantA].Codigo_Proy = Primera_letra_mayuscula(listaA[cantA].Codigo_Proy);
+		//Existe el proyecto?
+		if (listaA[cantA].Codigo_Proy[0] == 'P' && listaA[cantA].Codigo_Proy[1] == '-' && ContarCaracteres(listaA[cantA].Codigo_Proy) > 0 && ContarCaracteres(listaA[cantA].Codigo_Proy) <= 5) {
+			for (int i = 0; i < cantP; i++)
+			{
+				if (listaP[i].codigo_Proy == listaA[cantA].Codigo_Proy)
+				{
+					Existe_Proyecto = true;
+					guardar_pocicion_proyecto = i;
+				}
+			}
+		}
+
+		//Hay algun especialista designado? 
+		for (int i = 0; i < cantA; i++) {
+			if (listaA[i].Codigo_Proy == listaA[cantA].Codigo_Proy) {
+				Tiene_Asignacion = true;
+			}
+		}
+
+		if (Existe_Proyecto && !Tiene_Asignacion)
+		{
+			break;
+		}
+		else {
+			cout << "Codigo de Proyecto invalido o hay un especialista asignado" << endl;
+		}
+
+	} while (true);
+	cout << endl;
+
+	//-----------------------Elegir especialista existente----------------------
+	cout << "Lista de especialistas registrados: " << endl;
+	for (int i = 0; i < cantE; i++)
+	{
+		cout << ListaE[i].DNI_Especialista << " : " << ListaE[i].Nombre.Nombre_s + " " + ListaE[i].Nombre.Apellido_Paterno + " " + ListaE[i].Nombre.Apellido_Materno << endl;
+	}
+	do
+	{
+		guardar_pocicion_especialista = 0;
+		Existe_especialista = false;
+		cout << "DNI del especialista a asignar: ";
+		cin >> listaA[cantA].DNI_Especialista;
+
+		if (SoloDigitos(listaA[cantA].DNI_Especialista) && ContarCaracteres(listaA[cantA].DNI_Especialista) == 8)
+		{
+			for (int i = 0; i < cantE; i++)
+			{
+				if (ListaE[i].DNI_Especialista == listaA[cantA].DNI_Especialista) {
+					Existe_especialista = true;
+					guardar_pocicion_especialista = i;
+				}
+			}
+		}
+
+		if (Existe_especialista)
+		{
+			break;
+		}
+		else {
+			cout << "DNI invalido, introducir el DNI de uno de los especialistas" << endl;
+		}
+
+	} while (true);
+	cout << endl;
+
+
+
+	//-----------------Fecha de la asignacion--------------------
+	do
+	{
+		fecha_asignacion = 0;
+		fecha_hoy = Fecha_numero(2026, 11, 25);
+		Fecha_fin_proy = Fecha_numero(listaP[guardar_pocicion_proyecto].Fecha_Fin.Anio, listaP[guardar_pocicion_proyecto].Fecha_Fin.Mes, listaP[guardar_pocicion_proyecto].Fecha_Fin.Dia);
+		cout << "Ingresar la fecha de asignacion del Especialista (Ejem: 2026 10 28 (Anio: Mes: Dia:)): ";
+		cin >> listaA[cantA].Fecha_Asignacion.Anio >> listaA[cantA].Fecha_Asignacion.Mes >> listaA[cantA].Fecha_Asignacion.Dia;
+		fecha_asignacion = Fecha_numero(listaA[cantA].Fecha_Asignacion.Anio, listaA[cantA].Fecha_Asignacion.Mes, listaA[cantA].Fecha_Asignacion.Dia);
+		if (listaA[cantA].Fecha_Asignacion.Dia > 0 && listaA[cantA].Fecha_Asignacion.Dia <= 31 && listaA[cantA].Fecha_Asignacion.Mes <= 12 && listaA[cantA].Fecha_Asignacion.Mes > 0 && listaA[cantA].Fecha_Asignacion.Anio >= 2000 && listaA[cantA].Fecha_Asignacion.Anio <= 2100)
+
+		{
+			if (fecha_asignacion >= fecha_hoy && fecha_asignacion <= Fecha_fin_proy)
+			{
+				break;
+			}
+			else
+			{
+				cout << "Fecha invalida. Debe estar entre la fecha de hoy y la fecha de fin del proyecto." << endl;
+			}
+		}
+		else
+		{
+			cout << "Fecha invalida(dia, mes o anio fuera de rango)." << endl;
+		}
+
+	} while (true);
+	cout << endl;
+
+
+	cout << "Funciones del Especialista: " << endl;
+	cout << "1.-Responsable" << endl;
+	cout << "2.-Supervisor" << endl;
+	cout << "3.-Asistente" << endl;
+	do
+	{
+		funcion_del_especialista = 0;
+		cout << "Seleccionar la funcion del especialista designado: ";
+		cin >> funcion_del_especialista;
+		if (funcion_del_especialista == 1)
+		{
+			listaA[cantA].Funcion = funcion[0];
+			break;
+		}
+		else if (funcion_del_especialista == 2)
+		{
+			listaA[cantA].Funcion = funcion[1];
+			break;
+		}
+		else if (funcion_del_especialista == 3)
+		{
+			listaA[cantA].Funcion = funcion[2];
+			break;
+		}
+		else
+		{
+			cout << "Opcion invalida, por favor seleccionar una opcion anteriormente mencionada" << endl;
+		}
+	} while (true);
+	cout << endl;
+	cout << "Estado del Especialista: " << endl;
+	cout << "1.-Activa" << endl;
+	cout << "2.-Finalizada" << endl;
+	do
+	{
+		Estado_especialista = 0;
+		cout << "Seleccione El estado del Especialista designado: ";
+		cin >> Estado_especialista;
+		if (Estado_especialista == 1)
+		{
+			listaA[cantA].Estado_Asignacion = Estado[0];
+			break;
+		}
+		else if (Estado_especialista == 2)
+		{
+			listaA[cantA].Estado_Asignacion = Estado[1];
+			break;
+		}
+		else
+		{
+			cout << "Opcion invalida, por favor seleccionar una opcion anteriormente mencionada" << endl;
+		}
+
+	} while (true);
+	cout << endl;
+	//Cofirmar la asinacion: 
+
+	do
+	{
+		cout << "Confirmar la asignacion? (1 = Si, 2 = No): ";
+		cin >> confirmacion;
+		if (confirmacion == 1)
+		{
+			cout << "----ASIGNACION REGISTRADA---- " << endl;
+			cout << "DNI del especialista: " << listaA[cantA].DNI_Especialista << endl;
+			cout << "Nombre completo del especialista: " << ListaE[guardar_pocicion_especialista].Nombre.Nombre_s + " " + ListaE[guardar_pocicion_especialista].Nombre.Apellido_Paterno + " " + ListaE[guardar_pocicion_especialista].Nombre.Apellido_Materno << endl;
+			cout << "Proyecto de conservación seleccionado: " << listaP[guardar_pocicion_proyecto].codigo_Proy << " - " << listaP[guardar_pocicion_proyecto].Nombre_Proy << endl;
+			cout << "Monumento asociado al proyecto: " << listaP[guardar_pocicion_proyecto].Codigo_Monu << " - ";
+			for (int i = 0; i < cantM; i++)
+			{
+				if (ListaM[i].Código_Monu == listaP[guardar_pocicion_proyecto].Codigo_Monu) {
+					cout << ListaM[i].Nombre_Monu;
+				}
+			}
+			cout << endl;
+			cout << "Fecha de asignacion: " << listaA[cantA].Fecha_Asignacion.Anio << "/" << listaA[cantA].Fecha_Asignacion.Mes << "/" << listaA[cantA].Fecha_Asignacion.Dia << endl;
+			cout << "Funcion del especialista: " << listaA[cantA].Funcion << endl;
+			cout << "Estado de la asignacion: " << listaA[cantA].Estado_Asignacion << endl;
+			return true;
+
+		}
+		else if (confirmacion == 2)
+		{
+			cout << "Asignacion cancelada." << endl;
+			listaA[cantA].Codigo_Proy = "";
+			listaA[cantA].DNI_Especialista = "";
+			listaA[cantA].Estado_Asignacion = "";
+			listaA[cantA].Funcion = "";
+			listaA[cantA].Fecha_Asignacion.Dia = 0;
+			listaA[cantA].Fecha_Asignacion.Mes = 0;
+			listaA[cantA].Fecha_Asignacion.Anio = 0;
+			return false;
+		}
+		else
+		{
+			cout << "Opcion invalida, por favor seleccionar una opcion anteriormente mencionada " << endl;
+		}
+	} while (true);
+}
+
+void Actualizar_asignacion(Asignaciones listaA[], int cantA) {
+
+	string DNI, Codigo_proy;
+	int guardar_pocicion_Especialista = -1, guardar_pocicion_proy = -1;
+	bool existe_especialista = false, existe_proy = false, proy_especialista_en_uno = false;
+
+	cout << "Selecciono: Actualizar asignacion!" << endl;
+	cout << "=========================================" << endl;
+	do
+	{
+		guardar_pocicion_Especialista = -1;
+		guardar_pocicion_proy = -1;
+		existe_especialista = false;
+		existe_proy = false;
+		proy_especialista_en_uno = false;
+		do
+		{
+			cout << "ingresa DNI del especialista asignado: ";
+			cin >> DNI;
+			if (ContarCaracteres(DNI) == 8 && SoloDigitos(DNI))
+			{
+				for (int i = 0; i < cantA; i++)
+				{
+					if (listaA[i].DNI_Especialista == DNI)
+					{
+						existe_especialista = true;
+						guardar_pocicion_Especialista = i;
+						break;
+
+					}
+				}
+				break;
+			}
+			else
+			{
+				cout << "DNI invalido,introducir el DNI de uno de los especialistas ya registrados." << endl;
+			}
+		} while (true);
+
+		do
+		{
+			cout << "Ingresar el codigo del Proyecto del Especialista: ";
+			cin >> Codigo_proy;
+			Codigo_proy = Primera_letra_mayuscula(Codigo_proy);
+			//validar existencia del protecto
+			if (listaA[cantA].Codigo_Proy[0] == 'P' && listaA[cantA].Codigo_Proy[1] == '-' && ContarCaracteres(listaA[cantA].Codigo_Proy) > 0 && ContarCaracteres(listaA[cantA].Codigo_Proy) <= 5)
+			{
+				for (int i = 0; i < cantA; i++)
+				{
+					if (listaA[i].Codigo_Proy == Codigo_proy) {
+						existe_proy = true;
+						guardar_pocicion_proy = i;
+						break;
+					}
+				}
+				break;
+			}
+			else
+			{
+				cout << "Codigo invalido, por favor introducir un codigo de proyecto" << endl;
+			}
+		} while (true);
+
+		//validar que el proyecto tenga al especialista	mencionado
+		if (guardar_pocicion_Especialista == guardar_pocicion_proy && listaA[guardar_pocicion_Especialista].Estado_Asignacion == "Activa") {
+			proy_especialista_en_uno = true;
+		}
+		else
+		{
+			cout << "[ERROR], Verificar que el Especialista este en el proyecto mencionado y aun este activo." << endl;
+		}
+
+		if (proy_especialista_en_uno && existe_especialista && existe_proy)
+		{
+			//actualizar
+			listaA[guardar_pocicion_Especialista].Estado_Asignacion = "Finalizada";
+			cout << "Estado, Actualizado a Finalizada" << endl;
+			break;
+		}
+	} while (true);
+}
+
+//----------------------------------------------------------------Reporte 1----------------------------------------------------------------------------------
+void Reporte_1(Asignaciones* Asignacion_Epecialista_Proyecto, Proyectos_Conservacion* proyectos, Monumentos* Estructuras, Especialistas* especialistas, int cantP) {
+	string Codigo_P;
+	int cantNums = 0, codExiste = 0, posicion = 0;
+	
+	cout << "Se selecciono mostrar el Reporte 1" << endl;
+	cout << "============================================" << endl;
+
+	do {
+		cantNums = 0;
+		codExiste = 0;
+
+		cout << "Ingrese el codigo del proyecto de conservacion a reportar (ejm: P-001): ";
+		cin >> Codigo_P;
+
+		for (int k = 0; k < Codigo_P.length(); k++) {
+			Codigo_P[k] = toupper(Codigo_P[k]);
+		}
+
+		for (int i = 0; i < Codigo_P.length(); i++) {
+			if (isdigit(Codigo_P[i])) {
+				cantNums++;
+			}
+		}
+
+		for (int j = 0; j < cantP; j++) {
+			if (Codigo_P == proyectos[j].codigo_Proy) {
+				codExiste++;
+				posicion = j;
+			}
+		}
+
+		if (!(Codigo_P[0] == 'P' && Codigo_P[1] == '-' && ContarCaracteres(Codigo_P) == 5 && cantNums == 3 && codExiste == 1)) {
+			cout << "Ingrese un codigo de proyecto valido!" << endl;
+		}
+
+	} while (!(Codigo_P[0] == 'P' && Codigo_P[1] == '-' && ContarCaracteres(Codigo_P) == 5 && cantNums == 3 && codExiste == 1));
+
+	cout << endl;
+
+	cout << "- Datos del Proyecto de conservacion: " << endl;
+	cout << "     - Codigo del Proyecto: " << proyectos[posicion].codigo_Proy << endl;
+	cout << "     - Nombre del Proyecto: " << proyectos[posicion].Nombre_Proy << endl;
+	cout << "     - Tipo de intervencion: " << proyectos[posicion].Tipo_Intervencion << endl;
+	cout << "     - Fecha de Inicio: " << proyectos[posicion].Fecha_Inicio.Dia << "/" << proyectos[posicion].Fecha_Inicio.Mes << "/" << proyectos[posicion].Fecha_Inicio.Anio << endl;
+	cout << "     - Fecha Fin: " << proyectos[posicion].Fecha_Fin.Dia << "/" << proyectos[posicion].Fecha_Fin.Mes << "/" << proyectos[posicion].Fecha_Fin.Anio << endl;
+	cout << "     - Presupuesto Asignado: S/" << proyectos[posicion].Presupuesto_Asignado << endl;
+	cout << "     - Estado del Proyecto: " << proyectos[posicion].Estado_proy << endl;
+
+	cout << endl;
+
+	cout << "- Datos del Monumento asociado: " << endl;
+	cout << "     - Codigo del monumento: " << Estructuras[posicion].Código_Monu << endl;
+	cout << "     - Nombre del monumento: " << Estructuras[posicion].Nombre_Monu << endl;
+	cout << "     - Ubicacion (Lima, Cusco, Arequipa): " << Estructuras[posicion].Ubicación << endl;
+	cout << "     - Tipo de Patrimonio: " << Estructuras[posicion].Tipo_Patrimonio << endl;
+	cout << "     - Anio de construccion aproximado: " << Estructuras[posicion].Anho_Construcción_Aprox << endl;
+	cout << "     - Estado de conservacion: " << Estructuras[posicion].Estado_conservación << endl;
+
+	cout << endl;
+
+	if (especialistas[posicion].DNI_Especialista.empty()) {
+		cout << "     ESPECIALISTA NO ASIGNADO" << endl;
+	}
+	else {
+		cout << "- Datos del especialista asignado: " << endl;
+		cout << "     - DNI del especialista: " << especialistas[posicion].DNI_Especialista << endl;
+		cout << "     - Nombres y apellidos: " << especialistas[posicion].Nombre.Nombre_s << " ";
+		cout << especialistas[posicion].Nombre.Apellido_Paterno << " ";
+		cout << especialistas[posicion].Nombre.Apellido_Materno << endl;
+		cout << "     - Telefono: " << especialistas[posicion].Telefono << endl;
+		cout << "     - Especialidad: " << especialistas[posicion].Especialidad << endl;
+		cout << "     - Anios de Experiencia: " << especialistas[posicion].Anios_Experiencia << endl;
+		cout << "     - Fecha de asignacion: " << Asignacion_Epecialista_Proyecto[posicion].Fecha_Asignacion.Dia;
+		cout << "/" << Asignacion_Epecialista_Proyecto[posicion].Fecha_Asignacion.Mes << "/" << Asignacion_Epecialista_Proyecto[posicion].Fecha_Asignacion.Anio << endl;
+		cout << "     - Funcion que desempenia: " << Asignacion_Epecialista_Proyecto[posicion].Funcion << endl;
+		cout << "     - Estado de la Asignacion: " << Asignacion_Epecialista_Proyecto[posicion].Estado_Asignacion << endl;
+	}
+
+	cout << endl;
+}
+
+void main() {
+
+	int opcion = 0, cant = 0, cantM = 3, cantE = 4;
+	int cantP = 3, cantA = 3; // <-- añadi estas 3 (1/3) -G
+	int miniMenu = 0;
+	cant = 200;
+
+	Monumentos* Estructuras = new Monumentos[cant];
+	Especialistas* especialistas = new Especialistas[cant];
+	Proyectos_Conservacion* proyectos = new Proyectos_Conservacion[cant]; // <-- añadi estas 3 (2/3) -G
+	Asignaciones* Asignacion_Epecialista_Proyecto = new Asignaciones[cant];
+
+	MonumentosHistoricosYaRegistrados(Estructuras, cantM);
+	Especialistas_Registrados(especialistas, cantE);
+	ProyectosRegistrados(proyectos, cantP); // <-- añadi estas 3 (3/3) -G
+	Asignaciones_Registradas(Asignacion_Epecialista_Proyecto, cantA);
+
+	while (true) {
+		opcion = Menu();
+
+		if (opcion == 7) {
+			cout << "Saliendo...";
+			break;
+		}
+
+		if (opcion == 1) {
+			RegistroMonumento(Estructuras, cantM);
+			cantM++;
+		}
+		else if (opcion == 2) {
+			RegistroEspecialista(especialistas, cantE);
+			cantE++;
+		}
+		else if (opcion == 3)
+		{
+			RegistroProyecto(proyectos, cantP, Estructuras, cantM);
+			cantP++;
+		}
+		else if (opcion == 4) {
+			miniMenu = mini_menu();
+			if (miniMenu == 1) {
+				if (Asignar_especialista_a_proyecto_conservacion(Asignacion_Epecialista_Proyecto, cantA, especialistas, cantE, proyectos, cantP, Estructuras, cantM)) {
+					cantA++;
+				};
+			}
+			else if (miniMenu == 2)
+			{
+				Actualizar_asignacion(Asignacion_Epecialista_Proyecto, cantA);
+			}
+			else
+			{
+				cout << "Saliendo de asignaciones....." << endl;
+			}
+		}
+		else if (opcion == 5) {
+			Reporte_1(Asignacion_Epecialista_Proyecto, proyectos, Estructuras, especialistas, cantP);
+		}
+	}
+
+	delete[] Estructuras;
+	delete[] especialistas;
+	delete[] proyectos;
+	delete[] Asignacion_Epecialista_Proyecto;
+
+	getch();
+}
